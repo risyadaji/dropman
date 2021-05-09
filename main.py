@@ -1,11 +1,12 @@
 import discord
+import time
 import os
 
+from formatter import genMessageFormat
 from dotenv import load_dotenv
 from droplets import Droplet
 
 load_dotenv()
-
 DO_PROJECT_TOKEN = os.getenv('DO_PROJECT_TOKEN')
 DISCORD_TOKEN = os.getenv('DISCORD_BOT_TOKEN')
 
@@ -42,34 +43,28 @@ async def on_message(message):
       if command == "droplets":
         data = project.getDroplets() 
         for d in data:
-          msgFormat = '''
-          > **{name}**
-          > **ID**: {id}
-          > **Memory**: {memory}
-          > **Disk**: {disk}
-          > **CPU**: {cpu}
-          > **Status**: {status}
-          '''.format(name=d['name'], id=d['id'], memory=d['memory'], disk=d['disk'], cpu=d['cpu'], status=d['status'])
-
-          await message.channel.send(msgFormat)
+          await message.channel.send(genMessageFormat("getlist", d))
 
       # Action 'on' droplet command.
       elif command == "action" and (params[0] == "on" or params[0] == "off"):
         dropletId = params[1]
         toggleType = "power_" + params[0]
-        resp = project.toggleDropletStatus(dropletId, toggleType)
 
-        msgFormat = '''
-        > **Type**: {type}
-        > **Status**: {status}
-        > **Started At**: {startedAt}
-        '''.format(type= resp['type'], status=resp['status'], startedAt=resp['startedAt'])
+        lastDroplet = project.getDetailDroplet(dropletId)
+        action = project.toggleDropletStatus(dropletId, toggleType)
+        await message.channel.send(genMessageFormat("toggle", action))
 
-        await message.channel.send(msgFormat)
+        timeout = time.time() + 20
+        updatedDroplet = project.getDetailDroplet(dropletId)
+        while lastDroplet['status'] == updatedDroplet['status'] and time.time() < timeout:
+          time.sleep(2)
+          updatedDroplet = project.getDetailDroplet(dropletId)
 
-        # TODO ADD BACKGROUND TASK WHEN TOOGLING ACTION TO CALLBACK DROPLET STATUS
+        await message.channel.send(genMessageFormat("getlist", updatedDroplet))
 
       else:
         await message.channel.send('> Invalid command')
    
 client.run(DISCORD_TOKEN)
+  
+  

@@ -12,25 +12,14 @@ class Droplet:
     headers = {'Authorization': "Bearer " + self.token}
     resp = requests.get(headers=headers, url=DIGITALOCEAN_BASEURL + "/v2/droplets")  
     decode = json.loads(resp.text)
-    
-    data = []
-    for v in decode['droplets']:
-      data.append({
-        'id': v['id'],
-        'name': v['name'],
-        'memory': v['memory'],
-        'disk': v['disk'],
-        'cpu': v['vcpus'],
-        'status': v['status'],
-      })
 
-    return data
+    return decode['droplets']
 
   def getDetailDroplet(self, id):
     headers = {'Authorization': "Bearer " + self.token}
-    resp = requests.get(headers=headers,url=DIGITALOCEAN_BASEURL + "/v2/droplets/{id}".format(id = id))  
+    resp = requests.get(headers=headers,url=DIGITALOCEAN_BASEURL + "/v2/droplets/" + id)  
     decode = json.loads(resp.text)
-    return decode['droplets']
+    return decode['droplet']
 
   def toggleDropletStatus(self, id, toggleType):
     headers = {'Authorization': "Bearer " + self.token}
