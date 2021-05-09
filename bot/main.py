@@ -61,6 +61,7 @@ async def on_message(message):
           time.sleep(2)
           updatedDroplet = project.getDetailDroplet(dropletId)
 
+        updatedDroplet = project.getDetailDroplet(dropletId)
         await message.channel.send(genMessageFormat("getlist", updatedDroplet))
 
       else:
