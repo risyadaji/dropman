@@ -55,15 +55,17 @@ async def on_message(message):
         action = project.toggleDropletStatus(dropletId, toggleType)
         await message.channel.send(genMessageFormat("toggle", action))
 
-        timeout = time.time() + 20
+        timeout = time.time() + 60
         updatedDroplet = project.getDetailDroplet(dropletId)
         while lastDroplet['status'] == updatedDroplet['status'] and time.time() < timeout:
           time.sleep(2)
           updatedDroplet = project.getDetailDroplet(dropletId)
 
-        updatedDroplet = project.getDetailDroplet(dropletId)
-        await message.channel.send(genMessageFormat("getlist", updatedDroplet))
-
+        if time.time() < timeout():
+          await message.channel.send(genMessageFormat("getlist", updatedDroplet))
+        else:
+          await message.channel.send(genMessageFormat("timeout"))
+  
       else:
         await message.channel.send('> Invalid command')
    

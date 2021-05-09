@@ -16,4 +16,10 @@ def genMessageFormat(actionType, data):
     > **Status**: {status}
     '''.format(name=data['name'], id=data['id'], memory=data['memory'], disk=data['disk'], cpu=data['vcpus'], status=data['status'])
 
+  if (actionType == "timeout"):
+    return '''
+    > Waiting too long..
+    > check using `:dropman: droplets` to check your droplets status
+    '''
+
   return ""
