@@ -1,17 +1,17 @@
 import discord
 import time
 import os
+import droplets
 
 from formatter import genMessageFormat
 from dotenv import load_dotenv
-from droplets import Droplet
 
 load_dotenv()
 DO_PROJECT_TOKEN = os.getenv('DO_PROJECT_TOKEN')
 DISCORD_TOKEN = os.getenv('DISCORD_BOT_TOKEN')
 
 client = discord.Client()
-project = Droplet("Aji's Droplets", DO_PROJECT_TOKEN)
+project = droplets.Droplet("Aji's Droplets", DO_PROJECT_TOKEN)
 
 @client.event
 async def on_ready():
