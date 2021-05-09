@@ -61,7 +61,7 @@ async def on_message(message):
           time.sleep(2)
           updatedDroplet = project.getDetailDroplet(dropletId)
 
-        if time.time() < timeout():
+        if time.time() < timeout:
           await message.channel.send(genMessageFormat("getlist", updatedDroplet))
         else:
           await message.channel.send(genMessageFormat("timeout"))
